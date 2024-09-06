@@ -1,0 +1,119 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  createdAt           DateTime        @default(now())
+  dateOfBirth         DateTime?
+  email               String?         @unique
+  employmentEndDate   DateTime?
+  employmentStartDate DateTime?
+  firstName           String?
+  id                  String          @id @default(cuid())
+  lastName            String?
+  password            String
+  roles               Json
+  status              EnumUserStatus?
+  updatedAt           DateTime        @updatedAt
+  userPositionsItems  UserPositions[]
+  userProjectsItems   UserProjects[]
+  username            String          @unique
+  vacationsItems      Vacations[]
+}
+
+model Positions {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Projects {
+  createdAt   DateTime            @default(now())
+  description String?
+  id          String              @id @default(cuid())
+  name        String?
+  status      EnumProjectsStatus?
+  updatedAt   DateTime            @updatedAt
+}
+
+model Roles {
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  priority    Int?
+  updatedAt   DateTime @updatedAt
+}
+
+model UserPositions {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model UserProjects {
+  createdAt DateTime  @default(now())
+  endDate   DateTime?
+  id        String    @id @default(cuid())
+  startDate DateTime?
+  updatedAt DateTime  @updatedAt
+  user      User?     @relation(fields: [userId], references: [id])
+  userId    String?
+}
+
+model Vacations {
+  createdAt   DateTime  @default(now())
+  endDate     DateTime?
+  id          String    @id @default(cuid())
+  startDate   DateTime?
+  typeField   String?
+  updatedAt   DateTime  @updatedAt
+  user        User?     @relation(fields: [userId], references: [id])
+  userId      String?
+  workingDays Int?
+}
+
+model PaymentDetails {
+  amount       Float?
+  createdAt    DateTime  @default(now())
+  exchangeRate Float?
+  id           String    @id @default(cuid())
+  payment      Payments? @relation(fields: [paymentId], references: [id])
+  paymentId    String?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Payments {
+  amount              Float?
+  createdAt           DateTime         @default(now())
+  date                DateTime?
+  description         String?
+  id                  String           @id @default(cuid())
+  paymentDetailsItems PaymentDetails[]
+  updatedAt           DateTime         @updatedAt
+}
+
+model Holidays {
+  createdAt DateTime  @default(now())
+  date      DateTime?
+  id        String    @id @default(cuid())
+  name      String?
+  updatedAt DateTime  @updatedAt
+}
+
+enum EnumUserStatus {
+  Option1
+}
+
+enum EnumProjectsStatus {
+  Option1
+}
